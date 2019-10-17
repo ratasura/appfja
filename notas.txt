@@ -1,0 +1,6 @@
+configuracion idioma, platilla, zona horaria.
+crear modelos con sus migraciones en orden para migrar 
+en las migraciones hacer las relaciones fk etc 
+en los modelos hacer las relaciones one-to one etc 
+crear los requests
+

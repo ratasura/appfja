@@ -6,6 +6,7 @@ use App\Periferico;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Input;
 use App\Http\Requests\PerifericoFormRequest;
+use App\Ubicacion;
 use DB;
 
 class PerifericoController extends Controller
@@ -19,9 +20,10 @@ class PerifericoController extends Controller
     {
         if ($request) {
             $query=trim($request->get('searchText'));
-            $perifericos=Periferico::where('tipo','SCANNER')->get();            
+             $perifericos=Periferico::where('caf','LIKE','%'.$query.'%')->paginate();           
             return view('perifericos.index', ['perifericos' => $perifericos, "searchText" => $query]);
             // {{ dd($perifericos->get('')); }}
+            // $perifericos=Periferico::where('tipo','SCANNER')->get();
         }
     }
 
@@ -33,6 +35,18 @@ class PerifericoController extends Controller
     public function create()
     {
         //
+        $marcas = DB::table('perifericos')
+        ->distinct()
+        ->get('marca');
+        $modelos = DB::table('perifericos')
+        ->distinct()
+        ->get('modelo');
+        $subtipos = DB::table('perifericos')
+        ->distinct()
+        ->get('subtipo');
+        $ubicaciones= Ubicacion::all();
+        //dd($modelos);
+        return view('perifericos.create', compact('modelos','marcas','subtipos', 'ubicaciones'));
     }
 
     /**
@@ -41,9 +55,23 @@ class PerifericoController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(PerifericoFormRequest $request)
     {
-        //
+        //dd($request);
+        $periferico = new Periferico();
+        $periferico->tipo=$request->get('tipo');
+        $periferico->nombre=$request->get('nombre');
+        $periferico->responsable=$request->get('responsable');
+        $periferico->marca=$request->get('marca');
+        $periferico->modelo=$request->get('modelo');
+        $periferico->serie=$request->get('serie');
+        $periferico->caf=$request->get('caf');
+        $periferico->subtipo=$request->get('subtipo');
+        $periferico->conexion=$request->get('conexion');
+        $periferico->color=$request->get('color');
+        $periferico->idubicacion=$request->get('idubicacion');
+        $periferico->save();
+        return Redirect::to('perifericos');
     }
 
     /**
@@ -65,7 +93,20 @@ class PerifericoController extends Controller
      */
     public function edit($id)
     {
-        //
+        $marcas = DB::table('perifericos')
+        ->distinct()
+        ->get('marca');
+        $modelos = DB::table('perifericos')
+        ->distinct()
+        ->get('modelo');
+        $subtipos = DB::table('perifericos')
+        ->distinct()
+        ->get('subtipo');
+        $ubicaciones= Ubicacion::all();
+        $periferico = Periferico::findOrFail($id);
+        $ubi = Ubicacion::findOrFail($periferico->idubicacion);
+        //dd($ub);
+        return view ('perifericos.edit', compact('periferico','marcas','modelos','subtipos','ubicaciones','ubi'));
     }
 
     /**
@@ -77,7 +118,24 @@ class PerifericoController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+
+        //dd($request);
+        $periferico =  Periferico::findOrFail($id);
+        $periferico->tipo=$request->get('tipo');
+        $periferico->nombre=$request->get('nombre');
+        $periferico->responsable=$request->get('responsable');
+        $periferico->marca=$request->get('marca');
+        $periferico->modelo=$request->get('modelo');
+        $periferico->serie=$request->get('serie');
+        $periferico->caf=$request->get('caf');
+        $periferico->subtipo=$request->get('subtipo');
+        $periferico->conexion=$request->get('conexion');
+        $periferico->color=$request->get('color');
+        $periferico->idubicacion=$request->get('idubicacion');
+        //dd($periferico);
+        $periferico->update();
+        return Redirect::to('perifericos');
+
     }
 
     /**
@@ -88,39 +146,47 @@ class PerifericoController extends Controller
      */
     public function destroy($id)
     {
-        //
-    }
-
-    public function impresorasList(Request $request){
-
-        if ($request) {
-            $query=trim($request->get('searchText'));
-            $perifericos=Periferico::where('tipo','IMPRESORA')->paginate(10);
-            return view ('perifericos.plantillas.index', compact('perifericos'));
-            //dd($request) ;
-        }
+        $periferico = Periferico::findOrFail($id);
+        $periferico->delete();
+        return Redirect::to('perifericos');
 
     }
 
-    public function scannersList(Request $request){
+    // public function impresorasList(Request $request){
 
-        if ($request) {
-            $query=trim($request->get('searchText'));
-            $perifericos=Periferico::where('tipo','SCANNER')->paginate(10);
-            return view ('perifericos.plantillas.index', compact('perifericos'));
-            //dd($request) ;
-        }
+    //     if ($request) {
+    //         $query=trim($request->get('searchText'));
+    //         $perifericos=Periferico::where('tipo','IMPRESORA')->paginate(10);
+    //         return view ('perifericos.plantillas.index', compact('perifericos'));
+    //         //dd($request) ;
+    //     }
 
-    }
+    // }
 
-    public function telefonosList(Request $request){
+    // public function scannersList(Request $request){
 
-        if ($request) {
-            $query=trim($request->get('searchText'));
-            $perifericos=Periferico::where('tipo','TELEFONO')->paginate(10);
-            return view ('perifericos.plantillas.index', compact('perifericos'));
-            //dd($request) ;
-        }
+    //     if ($request) {
+    //         $query=trim($request->get('searchText'));
+    //         $perifericos=Periferico::where('tipo','SCANNER')->paginate(10);
+    //         return view ('perifericos.plantillas.index', compact('perifericos'));
+    //         //dd($request) ;
+    //     }
+
+    // }
+
+    // public function telefonosList(Request $request){
+
+    //     if ($request) {
+    //         $query=trim($request->get('searchText'));
+    //         $perifericos=Periferico::where('tipo','TELEFONO')->paginate(10);
+    //         return view ('perifericos.plantillas.index', compact('perifericos'));
+    //         //dd($request) ;
+    //     }
+
+    // }
+
+    public function obtieneUbicacion()
+    {
 
     }
 

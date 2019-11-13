@@ -11,13 +11,13 @@
 |
 */
 
-// Route::get('/welcome', function () {
-//     return view('welcome');
-// });
+Route::get('/welcome', function () {
+    return view('welcome');
+});
 
-// Route::get('/', function () {
-//     return view('home');
-// });
+Route::get('/', function () {
+    return view('home');
+});
 
 Route::resource('/ubicaciones', 'UbicacionController');
 Route::resource('/computadoras', 'ComputadorController');
@@ -25,7 +25,8 @@ Route::resource('/monitores', 'MonitorController');
 Route::resource('/teclados', 'TecladoController');
 Route::resource('/mouses', 'MouseController');
 Route::resource('/perifericos', 'PerifericoController');
-// Route::get('impresoras','PerifericoController@impresorasList');
+Route::get('monitor/getdata','MonitorController@listarMonitores')->name('monitor/getdata');
+//Route::get('impresoras','PerifericoController@impresorasList');
 // Route::get('scanners','PerifericoController@scannersList');
 // Route::get('telefonos','PerifericoController@telefonosList');
 

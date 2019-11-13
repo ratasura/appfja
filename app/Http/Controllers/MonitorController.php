@@ -107,4 +107,9 @@ class MonitorController extends Controller
         $monitor->delete();
         return Redirect::to('monitores');
     }
+
+    public function listarMonitores()
+    {
+      return \DataTables::of(Monitor::query())->make(true);
+    }
 }

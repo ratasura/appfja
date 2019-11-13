@@ -1,5 +1,5 @@
-{!! Form::open(array('url'=>'monitores','method'=>'GET','autocomplete'=>'off','role'=>'search')) !!}
-
+{{-- {!! Form::open(array('url'=>'computadoras','method'=>'GET','autocomplete'=>'off','role'=>'search')) !!} --}}
+{!! Form::open(['route'=>'computadoras.create','method' => 'GET']) !!}
 <div class="form-group">
 	<div class="input-group">
 		<input type="text" class="form-control" name="searchText" placeholder="Buscar..."  >

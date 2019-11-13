@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Symfony\Component\HttpFoundation\Request;
 
 class Monitor extends Model
 {
@@ -25,6 +26,14 @@ class Monitor extends Model
     {
         return $this->belongsTo('App\Computador');
     }
-   
+
+
+    // public function scopeSelectMonitor($query)
+    // {
+    //     return $query->where('caf',$query);
+    // }
+    // public static function BuscaMon($query){
+    //     return static::where('caf', $query);
+    // }
 
 }

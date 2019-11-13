@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Computador;
+use App\Monitor;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Input;
 use App\Http\Requests\ComputadorFormRequest;
@@ -34,9 +35,23 @@ class ComputadorController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        return view ('computadoras.create');
+        $marcas = DB::table('computadors')
+        ->distinct()
+        ->get('marca');
+        $modelos = DB::table('computadors')
+			->distinct()
+            ->get('modelo');
+        
+        $query=trim($request->get('searchText'));
+        $monitores=DB::table('monitors')
+            ->where('caf','LIKE','%'.$query.'%')
+            ->orderBy('id')
+            ->paginate(10);
+       // $monitores = Monitor::BuscaMon($query);
+       
+        return view ('computadoras.create', compact('marcas','modelos', 'monitores'));
     }
 
     /**
@@ -94,4 +109,6 @@ class ComputadorController extends Controller
     {
         //
     }
+
+   
 }
